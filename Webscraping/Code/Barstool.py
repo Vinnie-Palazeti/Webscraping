@@ -4,6 +4,8 @@ from datetime import date
 import requests
 from bs4 import BeautifulSoup
 
+
+# creating url iterator 
 start_date = date(2015, 1, 1)
 end_date = date(2016, 1, 1)
 daterange = pd.date_range(start_date, end_date)
@@ -14,14 +16,17 @@ dates = dates.iloc[::5, :].reset_index(drop=True)
 after = dates.iloc[::2].reset_index(drop=True)  # even
 before = dates.iloc[1::2].reset_index(drop=True)  # odd
 
+# the way their html functions requires overlapping date sets
 after_offset = after + pd.DateOffset(1)
 before_offset = before + pd.DateOffset(-1)
 
+# format
 after = after.dates.dt.strftime('%Y-%m-%d')
 before = before.dates.dt.strftime('%Y-%m-%d')
 after_offset = after_offset.dates.dt.strftime('%Y-%m-%d')
 before_offset = before_offset.dates.dt.strftime('%Y-%m-%d')
 
+# create date list
 urls = []
 for j in range(0,36):
   url_1 = "https://union.barstoolsports.com/stories/latest?limit=1500&after="+ after[j] + "&before=" + before[j] +"&type=standard_post"
@@ -29,7 +34,7 @@ for j in range(0,36):
   url_2 = "https://union.barstoolsports.com/stories/latest?limit=1500&after="+ before_offset[j] + "&before=" + after_offset[j+1] +"&type=standard_post"
   urls.append(url_2)
 
-
+# empty dataframe to append
 Barstool = pd.DataFrame({
     "dates": [],
     "author": [],
@@ -40,8 +45,10 @@ Barstool = pd.DataFrame({
 
 
 for i in range(len(urls)):
+  # read in directory
   info = pd.read_json(urls[i])['url']
   print("---", i, "---")
+  # each directory has hundreds of blogs in chronological order
   for k in range(len(info)):
     print("---", k,"---")
     url = info[k]
@@ -66,18 +73,13 @@ for i in range(len(urls)):
 
 #Barstool
 #usually works for about 8 months, then barstool kicks me off
-#Barstool.to_excel("Barstool_2019.xlsx", index=False)
-#works
-#Barstool.to_excel("Barstool_2019.xlsx", engine='xlsxwriter')
-#Barstool.to_excel("Barstool_2018_08_27.xlsx", index=False)
-
-i
-
-Barstool
+#Barstool.to_excel("Barstool_2015.xlsx", index=False)
+#Barstool.to_excel("Barstool_2015.xlsx", engine='xlsxwriter')
 
 
-
-################################################### For fixing traceback error
+################################################### 
+# Run after Error
+###################################################
 len(urls)
 
 
